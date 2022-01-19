@@ -12,14 +12,26 @@ namespace ServerLogic
     {
         private Socket _listener;
 
-        public SocketServer(string ip , string port)
+        public SocketServer(string port)
         {
             IPHostEntry host = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = host.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(port));
             _listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         }
         public Task ListenForClients()
+        {
+            _listener.Listen(10);
+            Socket client = null;
+
+            for (int i = 0; i <= 10; i++)
+            {
+                client = _listener.Accept();
+                Task.Run((() => RunClient(client)));             
+            }
+            return Task.CompletedTask;
+        }
+        private Task RunClient(Socket client)
         {
             throw new NotImplementedException();
         }
