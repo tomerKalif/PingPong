@@ -35,6 +35,7 @@ namespace ServerLogic
         }
         private async Task RunClient(Socket client)
         {
+            Console.WriteLine("new client detected");
             while (true)
             {
                 string ping = await ReciveFromClient(client);
@@ -45,6 +46,7 @@ namespace ServerLogic
 
         public async Task<string> ReciveFromClient(Socket client)
         {
+            Console.WriteLine("entered recive from client");
            byte []  bytes = new byte[1024];
            int bytesRec = client.Receive(bytes);
            return Encoding.ASCII.GetString(bytes, 0, bytesRec);
