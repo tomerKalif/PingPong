@@ -10,7 +10,7 @@ namespace ServerLogic
 {
     interface Iserver
     {
-        public void StartServer(string ip, string portNumber);
+        public Task RunServer();
 
         public Task ListenForClients();
 
