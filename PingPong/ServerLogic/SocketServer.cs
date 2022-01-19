@@ -8,7 +8,7 @@ using System.Net;
 
 namespace ServerLogic
 {
-    class SocketServer : Iserver
+    public class SocketServer : Iserver
     {
         private Socket _listener;
 
@@ -18,12 +18,14 @@ namespace ServerLogic
             IPAddress ipAddress = host.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, int.Parse(port));
             _listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _listener.Bind(localEndPoint);
+
         }
         public Task ListenForClients()
         {
             _listener.Listen(10);
             Socket client = null;
-
+            Console.WriteLine("waiting for clients");
             for (int i = 0; i <= 10; i++)
             {
                 client = _listener.Accept();
@@ -31,24 +33,33 @@ namespace ServerLogic
             }
             return Task.CompletedTask;
         }
-        private Task RunClient(Socket client)
+        private async Task RunClient(Socket client)
         {
-            throw new NotImplementedException();
+            while (true)
+            {
+                string ping = await ReciveFromClient(client);
+                Console.WriteLine(ping);
+                await SendToClient(client, Encoding.ASCII.GetBytes(ping));
+            }
         }
 
-        public Task ReciveFromClient(Socket client)
+        public async Task<string> ReciveFromClient(Socket client)
         {
-            throw new NotImplementedException();
+           byte []  bytes = new byte[1024];
+           int bytesRec = client.Receive(bytes);
+           return Encoding.ASCII.GetString(bytes, 0, bytesRec);
         }
 
-        public Task RunServer()
+        public async Task RunServer()
         {
-            throw new NotImplementedException();
+            await ListenForClients();
+            
         }
 
-        public Task SendToClient(Socket client, byte toSend)
+        public Task SendToClient(Socket client, byte[] toSend)
         {
-            throw new NotImplementedException();
+            client.Send(toSend);
+            return Task.CompletedTask;
         }
     }
 }

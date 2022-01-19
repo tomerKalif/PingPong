@@ -11,11 +11,6 @@ namespace ServerLogic
     interface Iserver
     {
         public Task RunServer();
-
-        public Task ListenForClients();
-
-        public Task ReciveFromClient(Socket client);
-
-        public Task SendToClient(Socket client, byte toSend);
+            
     }
 }
