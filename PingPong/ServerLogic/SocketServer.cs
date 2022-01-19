@@ -29,27 +29,10 @@ namespace ServerLogic
             for (int i = 0; i <= 10; i++)
             {
                 client = _listener.Accept();
-                Task.Run((() => RunClient(client)));             
+                IClient a = new ClientRunner(client);
+                a.RunClient().Start();
             }
             return Task.CompletedTask;
-        }
-        private async Task RunClient(Socket client)
-        {
-            Console.WriteLine("new client detected");
-            while (true)
-            {
-                string ping = await ReciveFromClient(client);
-                Console.WriteLine(ping);
-                await SendToClient(client, Encoding.ASCII.GetBytes(ping));
-            }
-        }
-
-        public async Task<string> ReciveFromClient(Socket client)
-        {
-            Console.WriteLine("entered recive from client");
-           byte []  bytes = new byte[1024];
-           int bytesRec = client.Receive(bytes);
-           return Encoding.ASCII.GetString(bytes, 0, bytesRec);
         }
 
         public async Task RunServer()
@@ -58,10 +41,6 @@ namespace ServerLogic
             
         }
 
-        public Task SendToClient(Socket client, byte[] toSend)
-        {
-            client.Send(toSend);
-            return Task.CompletedTask;
-        }
+
     }
 }
