@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using ServerLogic.PersonLogic;
 
 namespace ServerLogic
 {
@@ -17,11 +20,16 @@ namespace ServerLogic
         {
             Console.WriteLine("new client detected");
             // i think this can be replaced , will do if i have time
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+
             while (true)
             {
                 string name = await ReciveFromClient();
                 string age = await ReciveFromClient();
-
+                Person a = new Person(name, int.Parse(age));
+                bf.Serialize(ms, a);
+                await SendToClient(ms.ToArray());
             }
         }
 
