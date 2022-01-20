@@ -12,13 +12,13 @@ namespace ServerLogic
     {
         private TcpClient _client;
         private NetworkStream _networkStream;
-        private StreamWriter _writer;
 
 
 
         public ClientRunner(TcpClient client)
         {
             _client = client;
+            _networkStream = client.GetStream();
         }
         public async Task RunClient()
         {
