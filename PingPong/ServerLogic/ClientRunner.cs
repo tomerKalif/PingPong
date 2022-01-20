@@ -10,9 +10,13 @@ namespace ServerLogic
 {
     class ClientRunner : IClient
     {
-        private Socket _client;
+        private TcpClient _client;
+        private NetworkStream _networkStream;
+        private StreamWriter _writer;
 
-        public ClientRunner(Socket client)
+
+
+        public ClientRunner(TcpClient client)
         {
             _client = client;
         }
@@ -36,14 +40,14 @@ namespace ServerLogic
         public async Task<string> ReciveFromClient()
         {
             Console.WriteLine("entered recive from client");
-            byte[] bytes = new byte[1024];
-            int bytesRec = _client.Receive(bytes);
-            return Encoding.ASCII.GetString(bytes, 0, bytesRec);
+            byte[] buffer = new byte[_client.ReceiveBufferSize];
+            int bytesRead = _networkStream.Read(buffer, 0, _client.ReceiveBufferSize);
+            return Encoding.ASCII.GetString(buffer, 0, bytesRead);
         }
 
         public Task SendToClient(byte[] toSend)
         {
-            _client.Send(toSend);
+            _networkStream.Write(toSend , 0 , _client.ReceiveBufferSize);
             return Task.CompletedTask;
         }
     }

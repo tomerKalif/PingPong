@@ -8,7 +8,7 @@ namespace PingPongExercise
     {
         static async Task Main(string[] args)
         {
-            SocketServer a = new SocketServer("2121");
+            SocketServer a = new SocketServer("2121" , "2000");
             await a.RunServer();
         }
     }
